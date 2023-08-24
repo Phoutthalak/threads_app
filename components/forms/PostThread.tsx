@@ -17,7 +17,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-
 import { ThreadValidation } from "@/lib/validations/thread";
 import { createThread } from "@/lib/actions/thread.actions";
 
@@ -28,7 +27,6 @@ interface Props {
 function PostThread({ userId }: Props) {
     const router = useRouter();
     const pathname = usePathname();
-
     const { organization } = useOrganization();
 
     const form = useForm<z.infer<typeof ThreadValidation>>({

@@ -1,36 +1,34 @@
-import React from 'react'
 import { redirect } from "next/navigation";
-
+import { fetchCommunityPosts } from "@/lib/actions/community.actions";
+import { fetchUserPosts } from "@/lib/actions/user.actions";
 import ThreadCard from "../cards/ThreadCard";
-import { fetchUserPosts } from '@/lib/actions/user.actions';
 
-
-interface Result {
-    name: string;
-    image: string;
-    id: string;
-    threads: {
-        _id: string;
-        text: string;
-        parentId: string | null;
-        author: {
-            name: string;
-            image: string;
-            id: string;
-        };
-        community: {
-            id: string;
-            name: string;
-            image: string;
-        } | null;
-        createdAt: string;
-        children: {
-            author: {
-                image: string;
-            };
-        }[];
-    }[];
-}
+// interface Result {
+//     name: string;
+//     image: string;
+//     id: string;
+//     threads: {
+//         _id: string;
+//         text: string;
+//         parentId: string | null;
+//         author: {
+//             name: string;
+//             image: string;
+//             id: string;
+//         };
+//         community: {
+//             id: string;
+//             name: string;
+//             image: string;
+//         } | null;
+//         createdAt: string;
+//         children: {
+//             author: {
+//                 image: string;
+//             };
+//         }[];
+//     }[];
+// }
 
 interface Props {
     currentUserId: string;
@@ -38,10 +36,14 @@ interface Props {
     accountType: string;
 }
 
+async function ThreadsTab({ currentUserId, accountId, accountType }: Props) {
+    let result: any;
 
-export const ThreadsTab = async ({ currentUserId, accountId, accountType }: Props) => {
-
-    let result = await fetchUserPosts(accountId);
+    if (accountType === "Community") {
+        result = await fetchCommunityPosts(accountId);
+    } else {
+        result = await fetchUserPosts(accountId);
+    }
 
     if (!result) {
         redirect("/");
@@ -75,5 +77,7 @@ export const ThreadsTab = async ({ currentUserId, accountId, accountType }: Prop
                 />
             ))}
         </section>
-    )
+    );
 }
+
+export default ThreadsTab;
