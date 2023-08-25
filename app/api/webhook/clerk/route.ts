@@ -35,6 +35,7 @@ type Event = {
 };
 
 export const POST = async (request: Request) => {
+  console.log("Incoming webhook request:", JSON.stringify(request, null, 2));
   const payload = await request.json();
   const header = headers();
 
@@ -56,6 +57,7 @@ export const POST = async (request: Request) => {
       heads as IncomingHttpHeaders & WebhookRequiredHeaders
     ) as Event;
   } catch (err) {
+    console.error("Svix verification error:", err);
     return NextResponse.json({ message: err }, { status: 400 });
   }
 
