@@ -42,55 +42,54 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     const router = useRouter();
     const pathname = usePathname();
     const { startUpload } = useUploadThing("media");
-  
+
     const [files, setFiles] = useState<File[]>([]);
 
     const form = useForm<z.infer<typeof UserValidation>>({
         resolver: zodResolver(UserValidation),
         defaultValues: {
-          profile_photo: user?.image ? user.image : "",
-          name: user?.name ? user.name : "",
-          username: user?.username ? user.username : "",
-          bio: user?.bio ? user.bio : "",
+            profile_photo: user?.image ? user.image : "",
+            name: user?.name ? user.name : "",
+            username: user?.username ? user.username : "",
+            bio: user?.bio ? user.bio : "",
         },
-      });
+    });
 
     const handleImage = (
         e: ChangeEvent<HTMLInputElement>,
         fieldChange: (value: string) => void
-      ) => {
+    ) => {
         e.preventDefault();
-    
+
         const fileReader = new FileReader();
-    
+
         if (e.target.files && e.target.files.length > 0) {
-          const file = e.target.files[0];
-          setFiles(Array.from(e.target.files));
-    
-          if (!file.type.includes("image")) return;
-    
-          fileReader.onload = async (event) => {
-            const imageDataUrl = event.target?.result?.toString() || "";
-            fieldChange(imageDataUrl); // read the file
-          };
-    
-          fileReader.readAsDataURL(file); // allow us to change the files
+            const file = e.target.files[0];
+            setFiles(Array.from(e.target.files));
+
+            if (!file.type.includes("image")) return;
+
+            fileReader.onload = async (event) => {
+                const imageDataUrl = event.target?.result?.toString() || "";
+                fieldChange(imageDataUrl); // read the file
+            };
+
+            fileReader.readAsDataURL(file); // allow us to change the files
         }
-      };
+    };
 
     // Define a submit handler.
     const onSubmit = async (values: z.infer<typeof UserValidation>) => {
         const blob = values.profile_photo;
-    
+
         const hasImageChanged = isBase64Image(blob);
         if (hasImageChanged) {
-          const imgRes = await startUpload(files);
-    
-          if (imgRes && imgRes[0].fileUrl) {
-            values.profile_photo = imgRes[0].fileUrl;
-          }
+            const imgRes = await startUpload(files);
+
+            if (imgRes && imgRes[0].fileUrl) {
+                values.profile_photo = imgRes[0].fileUrl;
+            }
         }
-//TODO: update user profile after backend is done
 
         await updateUser({
             name: values.name,
@@ -99,13 +98,13 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
             userId: user.id,
             bio: values.bio,
             image: values.profile_photo,
-          });
-      
-          if (pathname === "/profile/edit") {
+        });
+
+        if (pathname === "/profile/edit") {
             router.back();
-          } else {
+        } else {
             router.push("/");
-          }
+        }
     };
 
     return (
@@ -145,7 +144,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                                         className='account-form_image-input'
                                         onChange={(e) => handleImage(e, field.onChange)} />
                                 </FormControl>
-                                <FormMessage/>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
